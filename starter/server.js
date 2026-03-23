@@ -11,17 +11,12 @@ const PORT = process.env.PORT || 3000;
 const publicDir = path.join(__dirname, 'public');
 
 async function connectToDatabase() {
-  if (!process.env.MONGODB_URI) {
-    console.warn('MONGODB_URI is missing. Create a .env file before testing database features.');
-    return;
-  }
-
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, { dbName: 'blog' });
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.error('MongoDB connection error:', error.message);
-  }
+  // TODO (student): Connect to MongoDB using mongoose.
+  // Suggested steps:
+  // 1) Check that process.env.MONGODB_URI exists.
+  // 2) Call mongoose.connect(process.env.MONGODB_URI, { dbName: 'blog' }).
+  // 3) Log success and handle possible errors.
+  console.log('TODO: implement connectToDatabase()');
 }
 
 app.locals.publicDir = publicDir;

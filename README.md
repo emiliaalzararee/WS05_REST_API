@@ -1,265 +1,133 @@
 # Workshop 05 - Building a REST API with Express and MongoDB
 
-## Overview
-In this workshop, you will extend the web server from the previous workshops into a simple REST API application.
+## Starter Notes
 
-You will keep the familiar page routes from earlier workshops:
-- `/`
-- `/about`
-- `/contact`
+Before starting, prepare your repository workspace:
+- Remove unnecessary content/files from the repository.
+- Copy the full content of this `starter/` folder to the repository root.
+- Continue the exercise from the repository root after the copy.
 
-Then you will add a new `/blog` route and build a REST API for blog posts using Express and MongoDB.
+## Exercise Context
+This exercise expands the previous exercises from this FullStack course.
+The student tasks are embedded directly into these files as TODOs:
+- `server.js`
+- `models/Post.js` (Model.js task)
+- `routes/pages.js`
+- `routes/posts.js`
 
-The goal is to help you understand the difference between:
-- browser-facing page routes such as `/blog`
-- resource endpoints such as `/api/posts`
+## Model.js Task (`models/Post.js`)
+In the model task, students must complete the `postSchema` definition for MongoDB using Mongoose. Define the post fields (`title`, `content`, `author`) with suitable validation rules (for example: `String`, `required: true`, and `trim: true`). Keep `timestamps: true` enabled so each document gets `createdAt` and `updatedAt` automatically. When this model is complete, the API routes can use it for create/read/update/delete operations and validation errors will be returned correctly during `POST` and `PUT` requests.
 
----
+## server.js Task (`connectToDatabase`)
+In `server.js`, complete the `connectToDatabase` function so the app connects to MongoDB before starting the server.
 
-## Learning Objectives
-By the end of this workshop, you should be able to:
-- Build an Express.js server that serves static pages and API responses
-- Connect a Node.js application to MongoDB using Mongoose
-- Create a Mongoose schema and model for blog posts
-- Build REST API endpoints for create, read, update, and delete operations
-- Return proper HTTP status codes and JSON responses
-- Organize page routes and API routes into separate Express Router files
-- Handle 404 and server errors in an Express application
+Implementation checklist:
+- Verify that `process.env.MONGODB_URI` exists. If missing, show a clear warning/error.
+- Call `mongoose.connect(process.env.MONGODB_URI, { dbName: 'blog' })`.
+- Log a success message when the connection is established.
+- Handle connection failures with `try/catch` and log the error message.
+- Keep server startup behind `connectToDatabase().then(...)` so routes run after the connection step.
 
----
+## Quick Start
+1. Install dependencies with `npm install`
+2. Create `.env` from `.env.example`
+3. Start the server with `npm run dev`
+4. Open `server.js`, `models/Post.js`, `routes/pages.js`, and `routes/posts.js`
+5. Complete the TODO comments in order
 
-## Topics Covered
-- Express.js application setup
-- Static file serving with `express.static()`
-- Page routing with `res.sendFile()`
-- MongoDB and Mongoose basics
-- REST API design
-- CRUD operations
-- JSON request and response handling
-- Error handling middleware
-- Environment variables with `dotenv`
+## Browser Routes
+- `GET /`
+   - Purpose: Serve the home page (`index.html`).
+   - Source file: `routes/pages.js`
+   - Expected result: HTTP `200` + HTML page.
 
----
+- `GET /about`
+   - Purpose: Serve the about page (`about.html`).
+   - Source file: `routes/pages.js`
+   - Expected result: HTTP `200` + HTML page.
 
-## Prerequisites
-Before starting this workshop, make sure you have:
-- Basic JavaScript knowledge
-- Completed Workshop 02 and Workshop 03, or equivalent understanding
-- Basic familiarity with MongoDB concepts from Workshop 04
-- Installed:
-  - Node.js
-  - npm
-  - Git
-  - MongoDB Atlas account or local MongoDB instance
+- `GET /contact`
+   - Purpose: Serve the contact page (`contact.html`).
+   - Source file: `routes/pages.js`
+   - Expected result: HTTP `200` + HTML page.
 
----
+- `GET /blog`
+   - Purpose: Serve the blog page (`blog.html`) where API usage is demonstrated.
+   - Source file: `routes/pages.js`
+   - Expected result: HTTP `200` + HTML page.
 
-## Project Description
-You will build:
-> A small Express and MongoDB application that serves web pages and exposes a REST API for blog posts
+If a browser route does not match any page route, the app should return your `404.html` file.
 
-Your application will:
-- Serve the existing page routes `/`, `/about`, and `/contact`
-- Add a new `/blog` page route
-- Create API endpoints under `/api/posts`
-- Store blog post data in MongoDB
-- Support create, read, update, and delete operations for blog posts
-- Return JSON responses for API requests
+## API Routes
+- `POST /api/posts`
+   - Purpose: Create a new blog post document in MongoDB.
+   - Request body: JSON with `title`, `content`, `author`.
+   - Success: HTTP `201` + created post JSON.
+   - Common errors: HTTP `400` for validation errors.
 
----
+- `GET /api/posts`
+   - Purpose: Fetch all posts.
+   - Success: HTTP `200` + JSON array of posts.
 
-## Getting Started
+- `GET /api/posts/:id`
+   - Purpose: Fetch one post by MongoDB ObjectId.
+   - Success: HTTP `200` + post JSON.
+   - Common errors:
+      - HTTP `400` when `:id` is not a valid ObjectId format.
+      - HTTP `404` when no post exists with that id.
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/Laurea-FullStack-2026/WS05_Rest_Api.git
-cd WS05_Rest_Api
+- `PUT /api/posts/:id`
+   - Purpose: Replace/update one post by id.
+   - Request body: full post fields (`title`, `content`, `author`).
+   - Success: HTTP `200` + updated post JSON.
+   - Common errors:
+      - HTTP `400` invalid id or validation error.
+      - HTTP `404` post not found.
+
+- `DELETE /api/posts/:id`
+   - Purpose: Remove one post by id.
+   - Success: HTTP `200` + success message JSON.
+   - Common errors:
+      - HTTP `400` invalid id.
+      - HTTP `404` post not found.
+
+Tip for testing: Start with `POST`, then copy the returned `_id` and use it in `GET /:id`, `PUT /:id`, and `DELETE /:id`.
+
+## Suggested Test Body
+Use Postman to test all API routes after implementing the TODOs.
+
+Recommended order in Postman:
+1. `POST /api/posts` (create)
+2. `GET /api/posts` (list)
+3. `GET /api/posts/:id` (single)
+4. `PUT /api/posts/:id` (update)
+5. `DELETE /api/posts/:id` (remove)
+
+Save the `_id` returned by `POST` and reuse it in `GET/PUT/DELETE` requests.
+
+### Create Post (`POST /api/posts`)
+```json
+{
+   "title": "My First Blog Post",
+   "content": "This API stores blog posts in MongoDB.",
+   "author": "Student"
+}
 ```
 
-### 2. Navigate to the starter folder
-```bash
-cd starter
+### Update Post (`PUT /api/posts/:id`)
+```json
+{
+   "title": "My First Blog Post (Updated)",
+   "content": "Updated content from Postman test.",
+   "author": "Student"
+}
 ```
 
-### 3. Install dependencies
-```bash
-npm install
+### Invalid Body Example (expect `400`)
+```json
+{
+   "title": "",
+   "content": "",
+   "author": ""
+}
 ```
-
-### 4. Create your environment file
-Copy `.env.example` into `.env` and update the values.
-
-Example:
-```env
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/blog
-PORT=3000
-```
-
-Atlas target for this workshop:
-- Database: `blog`
-- Collection: `posts`
-
-### 5. Start working on the tasks
-Open `server.js`, `routes/pages.js`, `models/Post.js`, and `routes/posts.js` and follow the TODO comments.
-
-The repository also includes a `Solution/` folder with a complete reference implementation.
-
----
-
-## Project Structure
-
-```text
-WS05_Rest_Api/
-├── README.md
-├── requirements.md
-├── Solution/
-│   ├── .env.example
-│   ├── .gitignore
-│   ├── package.json
-│   ├── server.js
-│   ├── models/
-│   │   └── Post.js
-│   ├── routes/
-│   │   ├── pages.js
-│   │   └── posts.js
-│   └── public/
-│       ├── index.html
-│       ├── about.html
-│       ├── contact.html
-│       ├── blog.html
-│       ├── 404.html
-│       ├── 500.html
-│       └── styles/
-│           └── style.css
-└── starter/
-    ├── .env.example
-    ├── .gitignore
-    ├── README.md
-    ├── package.json
-    ├── server.js
-    ├── models/
-    │   └── Post.js
-    ├── routes/
-   │   ├── pages.js
-    │   └── posts.js
-    └── public/
-        ├── index.html
-        ├── about.html
-        ├── contact.html
-        ├── blog.html
-        ├── 404.html
-        ├── 500.html
-        └── styles/
-            └── style.css
-```
-
----
-
-## Tasks Overview
-
-### Task 1 - Setup the Application
-- Install the required packages
-- Load environment variables
-- Create the Express app
-- Enable JSON body parsing
-- Connect to MongoDB
-
-### Task 2 - Add Page Routes
-- Serve the existing routes `/`, `/about`, and `/contact`
-- Add a new route `/blog`
-- Define those routes in `routes/pages.js`
-- Use `res.sendFile()` for page responses
-
-### Task 3 - Create the Post Model
-- Define a Mongoose schema for blog posts
-- Add required fields such as title and content
-- Export the model
-
-### Task 4 - Create Posts
-- Implement `POST /api/posts`
-- Save a new blog post to MongoDB
-- Return the created document as JSON
-
-### Task 5 - Read Posts
-- Implement `GET /api/posts`
-- Implement `GET /api/posts/:id`
-- Return proper status codes for missing or invalid IDs
-
-### Task 6 - Update and Delete Posts
-- Implement `PUT /api/posts/:id`
-- Implement `DELETE /api/posts/:id`
-
-### Task 7 - Error Handling and Startup
-- Add 404 handling
-- Add server error handling
-- Start the application with `app.listen()`
-
----
-
-## Running Your Server
-
-1. Make sure you are in the `starter` directory
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the server:
-   ```bash
-   npm run dev
-   ```
-   Or:
-   ```bash
-   npm start
-   ```
-4. Test these browser routes:
-   - `http://localhost:3000/`
-   - `http://localhost:3000/about`
-   - `http://localhost:3000/contact`
-   - `http://localhost:3000/blog`
-5. Test the API endpoints with Postman or curl:
-   - `POST /api/posts`
-   - `GET /api/posts`
-   - `GET /api/posts/:id`
-   - `PUT /api/posts/:id`
-   - `DELETE /api/posts/:id`
-
----
-
-## Manual Testing Checklist
-- [ ] Server starts without syntax errors
-- [ ] MongoDB connection is successful
-- [ ] Home page loads at `/`
-- [ ] About page loads at `/about`
-- [ ] Contact page loads at `/contact`
-- [ ] Blog page loads at `/blog`
-- [ ] `POST /api/posts` creates a new post
-- [ ] `GET /api/posts` returns all posts
-- [ ] `GET /api/posts/:id` returns one post
-- [ ] `PUT /api/posts/:id` updates a post
-- [ ] `DELETE /api/posts/:id` deletes a post
-- [ ] Invalid URLs return a 404 response
-
----
-
-## Learning Resources
-- [Express.js Documentation](https://expressjs.com/)
-- [Mongoose Documentation](https://mongoosejs.com/docs/)
-- [MongoDB Documentation](https://www.mongodb.com/docs/)
-- [REST API Tutorial](https://restfulapi.net/)
-
----
-
-## Submission
-After completing the workshop:
-1. Test your routes and API endpoints
-2. Commit your work with meaningful messages
-3. Push your repository to GitHub
-
----
-
-## Next Steps
-After this workshop, you will be ready to:
-- Add query filters and pagination to APIs
-- Build frontend pages that consume your API
-- Add validation and improved error handling
-- Explore authentication and protected routes
