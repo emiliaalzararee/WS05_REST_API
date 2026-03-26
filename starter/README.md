@@ -13,8 +13,6 @@ The student tasks are embedded directly into these files as TODOs:
 - `routes/pages.js`
 - `routes/posts.js`
 
-## Model.js Task (`models/Post.js`)
-In the model task, students must complete the `postSchema` definition for MongoDB using Mongoose. Define the post fields (`title`, `content`, `author`) with suitable validation rules (for example: `String`, `required: true`, and `trim: true`). Keep `timestamps: true` enabled so each document gets `createdAt` and `updatedAt` automatically. When this model is complete, the API routes can use it for create/read/update/delete operations and validation errors will be returned correctly during `POST` and `PUT` requests.
 
 ## server.js Task (`connectToDatabase`)
 In `server.js`, complete the `connectToDatabase` function so the app connects to MongoDB before starting the server.
@@ -26,13 +24,8 @@ Implementation checklist:
 - Handle connection failures with `try/catch` and log the error message.
 - Keep server startup behind `connectToDatabase().then(...)` so routes run after the connection step.
 
-## Quick Start
-1. Install dependencies with `npm install`
-2. Create `.env` from `.env.example`
-3. Start the server with `npm run dev`
-4. Open `server.js`, `models/Post.js`, `routes/pages.js`, and `routes/posts.js`
-5. Complete the TODO comments in order
-
+## Model.js Task (`models/Post.js`)
+In the model task, students must complete the `postSchema` definition for MongoDB using Mongoose. Define the post fields (`title`, `content`, `author`) with suitable validation rules (for example: `String`, `required: true`, and `trim: true`). Keep `timestamps: true` enabled so each document gets `createdAt` and `updatedAt` automatically. When this model is complete, the API routes can use it for create/read/update/delete operations and validation errors will be returned correctly during `POST` and `PUT` requests.
 
 ## Browser Routes
 - `GET /`
@@ -89,6 +82,14 @@ If a browser route does not match any page route, the app should return your `40
   - Common errors:
     - HTTP `400` invalid id.
     - HTTP `404` post not found.
+
+    ## Quick Start
+1. Install dependencies with `npm install`
+2. Create `.env` from `.env.example`
+3. Start the server with `npm run dev`
+4. Open `server.js`, `models/Post.js`, `routes/pages.js`, and `routes/posts.js`
+5. Complete the TODO comments in order
+
 
 Tip for testing: Start with `POST`, then copy the returned `_id` and use it in `GET /:id`, `PUT /:id`, and `DELETE /:id`.
 

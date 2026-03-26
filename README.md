@@ -8,18 +8,20 @@ Before starting, prepare your repository workspace:
 - Continue the exercise from the repository root after the copy.
 
 ## Exercise Context
-This exercise expands the previous exercises from this FullStack course.
+This exercise expands the previous exercises from this FullStack course. In this exercise, students will create a REST API to handle blog postings.
 The student tasks are embedded directly into these files as TODOs:
 - `server.js`
 - `models/Post.js` (Model.js task)
 - `routes/pages.js`
 - `routes/posts.js`
 
-## Model.js Task (`models/Post.js`)
-In the model task, students must complete the `postSchema` definition for MongoDB using Mongoose. Define the post fields (`title`, `content`, `author`) with suitable validation rules (for example: `String`, `required: true`, and `trim: true`). Keep `timestamps: true` enabled so each document gets `createdAt` and `updatedAt` automatically. When this model is complete, the API routes can use it for create/read/update/delete operations and validation errors will be returned correctly during `POST` and `PUT` requests.
-
 ## server.js Task (`connectToDatabase`)
 In `server.js`, complete the `connectToDatabase` function so the app connects to MongoDB before starting the server.
+
+## Model Task (`models/Post.js`)
+In the model task, students must complete the `postSchema` definition for MongoDB using Mongoose. Define the post fields (`title`, `content`, `author`) with suitable validation rules (for example: `String`, `required: true`, and `trim: true`). Keep `timestamps: true` enabled so each document gets `createdAt` and `updatedAt` automatically. When this model is complete, the API routes can use it for create/read/update/delete operations and validation errors will be returned correctly during `POST` and `PUT` requests.
+
+
 
 Implementation checklist:
 - Verify that `process.env.MONGODB_URI` exists. If missing, show a clear warning/error.
