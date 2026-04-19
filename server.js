@@ -9,7 +9,7 @@ const postsRouter = require('./routes/posts');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const publicDir = path.join(__dirname, 'public');
+const publicDir = path.join(__dirname, 'starter', 'public');
 app.locals.publicDir = publicDir;
 
 app.use(express.json());
